@@ -25,35 +25,26 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
-        with:
-          tf_actions_working_dir: ./eks/
 
       - name: Terraform Init
         id: init
         run: terraform init
-        with:
-          tf_actions_working_dir: ./eks/
       
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        with:
-          tf_actions_working_dir: ./eks/
 
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
         continue-on-error: true
-        with:
-          tf_actions_working_dir: ./eks/
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
-          tf_actions_working_dir: ./eks/
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
@@ -75,11 +66,9 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
-        with:
-          tf_actions_working_dir: ./eks/
+
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
-        with:
-          tf_actions_working_dir: ./eks/
+
