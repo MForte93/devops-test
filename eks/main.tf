@@ -20,6 +20,7 @@ terraform {
   }
 }
 
+
 provider "aws" {
   region = "us-east-2"
 }
@@ -31,4 +32,4 @@ module "eks_cluster" {
   max_size     = 2
   desired_size = 2
   instance_types = ["t3.small"]
-}
+} 
