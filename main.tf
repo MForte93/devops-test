@@ -18,7 +18,7 @@ terraform {
       name = "gh-aws-actions"
     }
   }
-}
+} 
 provider "aws" {
   region = "us-east-2"
 }
