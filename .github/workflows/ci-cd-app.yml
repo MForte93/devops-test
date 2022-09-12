@@ -59,9 +59,6 @@ jobs:
         docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CONTAINER_IMAGE    
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
     #if: github.ref == 'refs/heads/master'
     #needs:
     #  - run-tests
@@ -112,5 +109,5 @@ jobs:
         export ECR_REPOSITORY=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
         export IMAGE_TAG=${{ env.SHORT_SHA }}
         export KUBECONFIG=kubeconfig.yaml
-        envsubst < git-deployment.yaml > deployment.yaml
-        kubectl apply -f deployment.yaml
+        envsubst < app/git-deployment.yaml > app/deployment.yaml
+        kubectl apply -f app/deployment.yaml
