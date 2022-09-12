@@ -15,7 +15,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   CONTAINER_IMAGE: devops-test-app:${{ github.sha }}
   ECR_REPOSITORY: devops-test-app
-  SHORT_SHA: $(echo ${{ github.sha }} | cut -c 1-8)
+  SHORT_SHA: ${{ github.sha }}
 
 jobs:
   build-and-push:
