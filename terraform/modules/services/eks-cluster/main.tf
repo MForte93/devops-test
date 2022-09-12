@@ -1,26 +1,3 @@
-
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "3.26.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "3.0.1"
-    }
-  }
-  required_version = ">= 1.0.0"
-
-  cloud {
-    organization = "gh-aws-actions"
-
-    workspaces {
-      name = "gh-aws-actions"
-    }
-  }
-}
-
 # Deploy the control plane
 resource "aws_eks_cluster" "cluster" {
   name     = var.name
