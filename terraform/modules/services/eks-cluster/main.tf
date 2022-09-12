@@ -5,7 +5,7 @@ resource "aws_eks_cluster" "cluster" {
   version  = "1.21"
 
   vpc_config {
-    subnet_ids = aws_subnet.example[*].id
+    subnet_ids = data.aws_subnet.example
   }
 
   # Ensure that IAM Role permissions are created before and deleted after
@@ -45,7 +45,7 @@ resource "aws_eks_node_group" "nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.name
   node_role_arn   = aws_iam_role.node_group.arn
-  subnet_ids      = aws_subnet.example[*].id
+  subnet_ids      = data.aws_subnet.example[*].id
   instance_types = var.instance_types
 
   scaling_config {
