@@ -1,3 +1,4 @@
+
 terraform {
   required_providers {
     aws = {
@@ -27,7 +28,7 @@ resource "aws_eks_cluster" "cluster" {
   version  = "1.21"
 
   vpc_config {
-    subnet_ids = data.aws_subnet.default.ids
+    subnet_ids = data.aws_subnet.default.id
   }
 
   # Ensure that IAM Role permissions are created before and deleted after
