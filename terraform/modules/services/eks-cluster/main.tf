@@ -110,9 +110,6 @@ data "aws_availability_zones" "available" {
 }
 
 data "aws_subnet" "example" {
-  count = 2
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.example.id]
