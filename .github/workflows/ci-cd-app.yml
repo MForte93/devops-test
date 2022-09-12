@@ -62,7 +62,7 @@ jobs:
     #if: github.ref == 'refs/heads/master'
     #needs:
     #  - run-tests
-
+    needs: build-and-push
     steps:
     - name: Clone
       uses: actions/checkout@v2
@@ -109,5 +109,5 @@ jobs:
         export ECR_REPOSITORY=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
         export IMAGE_TAG=${{ env.SHORT_SHA }}
         export KUBECONFIG=kubeconfig.yaml
-        envsubst < k8s/kustomization.tmpl.yaml > k8s/kustomization.yaml
+        envsubst < kustomization.tmpl.yaml > kustomization.yaml
         kubectl kustomize k8s | kubectl apply -f - 
