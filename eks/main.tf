@@ -1,4 +1,3 @@
-
 terraform {
   required_providers {
     aws = {
@@ -28,7 +27,7 @@ provider "aws" {
 }
  
 module "eks_cluster" {
-  source = "github.com/MForte93/devops-test//code/terraform/modules/services/eks-cluster"
+  source = "github.com/MForte93/devops-test//terraform/modules/services/eks-cluster"
   name = "terraform-learning"
   min_size     = 2
   max_size     = 2
