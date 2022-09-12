@@ -5,7 +5,7 @@ resource "aws_eks_cluster" "cluster" {
   version  = "1.21"
 
   vpc_config {
-    subnet_ids = data.aws_subnet.default.id
+    subnet_ids = data.aws_subnet.example.id
   }
 
   # Ensure that IAM Role permissions are created before and deleted after
@@ -45,7 +45,7 @@ resource "aws_eks_node_group" "nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.name
   node_role_arn   = aws_iam_role.node_group.arn
-  subnet_id      = data.aws_subnet.default.id
+  subnet_id      = data.aws_subnet.example[*].id
   instance_types = var.instance_types
 
   scaling_config {
@@ -101,14 +101,21 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
 # Since this code is only for testing and learning, use the Default VPC and subnets.
 # For real-world use cases, you should use a custom VPC and private subnets.
 
-data "aws_vpc" "default" {
+data "aws_vpc" "example" {
   default = true
 }
 
-data "aws_subnet" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+data "aws_subnet" "example" {
+  count = 2
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+  cidr_block        = cidrsubnet(aws_vpc.example.cidr_block, 8, count.index)
+  vpc_id            = data.aws_vpc.example.id
+  tags = {
+    "kubernetes.io/cluster/${aws_eks_cluster.example.name}" = "shared"
   }
 }
 
