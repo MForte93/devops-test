@@ -45,7 +45,7 @@ resource "aws_eks_node_group" "nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.name
   node_role_arn   = aws_iam_role.node_group.arn
-  subnet_ids      = data.aws_subnet.example[*].id
+  subnet_ids      = data.aws_subnet.example[count.index].id
   instance_types = var.instance_types
 
   scaling_config {
