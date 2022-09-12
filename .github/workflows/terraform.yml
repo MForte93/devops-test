@@ -3,13 +3,18 @@ name: "Terraform"
 on:
   push:
     branches:
-      - main
-  pull_request:
+      - '*'
+    paths:
+      - eks/**    
+#  pull_request:
 
 jobs:
   terraform:
     name: "Terraform"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./eks
     steps:
       - name: Checkout
         uses: actions/checkout@v3
