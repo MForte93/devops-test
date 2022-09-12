@@ -113,8 +113,6 @@ data "aws_subnet" "example" {
   count = 2
   availability_zone = data.aws_availability_zones.available.names[count.index]
   vpc_id            = data.aws_vpc.example.id
-  tags = {
-    "kubernetes.io/cluster/${aws_eks_cluster.cluster.name}" = "shared"
-  }
+
 }
 
