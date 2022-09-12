@@ -1,20 +1,69 @@
-name: "Terraform"
+name: "AWS ECR Push and Terraform Deploy to EKS"
 
 on:
   push:
     branches:
       - '*'
     paths:
-      - eks/**    
-#  pull_request:
+      - app/**    
+
+env:
+  AWS_DEFAULT_REGION: us-east-2
+  AWS_DEFAULT_OUTPUT: json
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  CONTAINER_IMAGE: devops-test-app:${{ github.sha }}
 
 jobs:
-  terraform:
-    name: "Terraform"
+  build-and-push:
+    name: Build and deploy
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./eks
+        working-directory: ./app
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: "3.7"
+
+    - name: Install Dependencies
+      run: python3.7 -m pip install fastapi
+
+    # Add steps here like linting, testing, minification, etc.
+    - name: Setup ECR
+      run: |
+        # Login to AWS ECR
+        #$( aws ecr get-login --no-include-email )
+        aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+    - name: Build and tag the image
+      run: |
+        # Build and tag the image
+        docker build \
+          -t $CONTAINER_IMAGE \
+          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CONTAINER_IMAGE .
+
+    # Only push to registry on main
+    - name: Push
+      #if: github.ref == 'refs/heads/main'
+      run: |
+        # Push image to AWS ECR
+        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CONTAINER_IMAGE
+        
+
+  terraform:
+    name: "Terraform"
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,7 +80,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: terraform init -var="image_id=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
       
       - name: Terraform Validate
         id: validate
@@ -40,7 +89,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -input=false
+        run: terraform plan -no-color -var="image_id=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         continue-on-error: true
 
       - uses: actions/github-script@v6
@@ -72,4 +121,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -var="image_id=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
