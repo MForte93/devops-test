@@ -28,7 +28,7 @@ provider "aws" {
 }
  
 module "eks_cluster" {
-  source = "github.com/MForte93/devops-test"
+  source = "github.com/MForte93/devops-test//code"
   name = "terraform-learning"
   min_size     = 2
   max_size     = 2
