@@ -1,5 +1,4 @@
-
-terraform {
+terraform { 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -28,7 +27,7 @@ provider "aws" {
 }
  
 module "eks_cluster" {
-  source = "./terraform/modules/services/eks-cluster"
+  source = "../terraform/modules/services/eks-cluster"
   name = "terraform-learning"
   min_size     = 2
   max_size     = 2
