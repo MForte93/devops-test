@@ -7,6 +7,14 @@ on:
     paths:
       - app/**    
 
+env:
+  AWS_DEFAULT_REGION: us-east-2
+  AWS_DEFAULT_OUTPUT: json
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  CONTAINER_IMAGE: fastapi-example:${{ github.sha }}
+
 jobs:
   build-and-push:
     name: Build and deploy
@@ -15,21 +23,9 @@ jobs:
       run:
         working-directory: ./app
     steps:
-    
-    - name: Install Octopus CLI
-      uses: OctopusDeploy/install-octopus-cli-action@v1.1.1
-      with:
-          version: latest
 
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
 
     - name: Set up Python
       uses: actions/setup-python@v1
@@ -40,23 +36,19 @@ jobs:
       run: python3.7 -m pip install fastapi
 
     # Add steps here like linting, testing, minification, etc.
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Build, tag, and push the image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-        IMAGE_TAG: "latest"
-
+    - name: Setup ECR
       run: |
-        # Build a docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        # Login to AWS ECR
+        $( aws ecr get-login --no-include-email )
 
-    # Only push to registry on master
+    - name: Build and tag the image
+      run: |
+        # Build and tag the image
+        docker build \
+          -t $CONTAINER_IMAGE \
+          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CONTAINER_IMAGE .
+
+    # Only push to registry on main
     - name: Push
       #if: github.ref == 'refs/heads/main'
       run: |
@@ -68,6 +60,7 @@ jobs:
 
   terraform:
     name: "Terraform"
+    needs: build-and-push
     runs-on: ubuntu-latest
     defaults:
       run:
