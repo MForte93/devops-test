@@ -5,7 +5,7 @@ resource "aws_eks_cluster" "cluster" {
   version  = "1.21"
 
   vpc_config {
-    subnet_ids = data.aws_subnet.example
+    subnet_ids = data.aws_subnets.default.ids
   }
 
   # Ensure that IAM Role permissions are created before and deleted after
@@ -45,7 +45,7 @@ resource "aws_eks_node_group" "nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.name
   node_role_arn   = aws_iam_role.node_group.arn
-  subnet_ids      = data.aws_subnet.example
+  subnet_ids      = data.aws_subnets.default.ids
   instance_types = var.instance_types
 
   scaling_config {
@@ -101,18 +101,13 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
 # Since this code is only for testing and learning, use the Default VPC and subnets.
 # For real-world use cases, you should use a custom VPC and private subnets.
 
-data "aws_vpc" "example" {
+data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
-data "aws_subnet" "example" {
+data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.example.id]
+    values = [data.aws_vpc.default.id]
   }
 }
-
