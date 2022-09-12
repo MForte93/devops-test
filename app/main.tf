@@ -24,9 +24,7 @@ terraform {
 
 }
 
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-}
+
 
 variable "image_id" {
   type = string
