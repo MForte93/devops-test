@@ -1,4 +1,4 @@
-terraform {  
+terraform { 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -18,7 +18,7 @@ terraform {
       name = "gh-aws-actions"
     }
   }
-} 
+}
 provider "aws" {
   region = "us-east-2"
 }
