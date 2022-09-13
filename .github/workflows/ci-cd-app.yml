@@ -1,4 +1,4 @@
-name: "AWS ECR Push and Terraform Deploy to EKS"
+name: "Build image, AWS ECR Push and Deploy to EKS"
 
 on:
   push:
