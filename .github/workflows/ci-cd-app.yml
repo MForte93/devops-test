@@ -100,8 +100,8 @@ jobs:
         IMAGE_TAG: $SHORT_SHA
         ECR_REPOSITORY: $ECR_REPOSITORY
       with:
-        input: git-deployment.yml
-        output: deploy.yml
+        input: app/git-deployment.yml
+        output: app/deploy.yml
 
     - name: Install and configure kubectl
       run: |
