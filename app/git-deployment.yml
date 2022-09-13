@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-test-app
+  labels:
+    app: devops-test-app
+spec:
+  selector:
+    matchLabels:
+        app: devops-test-app
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: devops-test-app
+    spec:
+      containers:
+        - name: devops-test-app
+          image: 969765361855.dkr.ecr.us-east-2.amazonaws.com/devops-test-app:latest
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          imagePullPolicy: Always
