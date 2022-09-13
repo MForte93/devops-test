@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: devops-test-app
+  name: ${ECR_REPOSITORY}
   labels:
-    app: devops-test-app
+    app: ${ECR_REPOSITORY}
 spec:
   selector:
     matchLabels:
-        app: devops-test-app
+        app: ${ECR_REPOSITORY}
   replicas: 2
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: devops-test-app
+        app: ${ECR_REPOSITORY}
     spec:
       containers:
-        - name: devops-test-app
-          image: ${ECR_REPOSITORY}/devops-test-app:${IMAGE_TAG}
+        - name: ${ECR_REPOSITORY}
+          image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
           ports:
             - containerPort: 80
               protocol: TCP

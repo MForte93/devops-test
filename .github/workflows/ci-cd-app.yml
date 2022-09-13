@@ -59,6 +59,9 @@ jobs:
         docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CONTAINER_IMAGE    
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
     #if: github.ref == 'refs/heads/master'
     #needs:
     #  - run-tests
@@ -90,6 +93,16 @@ jobs:
     #    .
     #    docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
     #    docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.SHORT_SHA }}
+    - name: Replace Environment Variables
+      uses: danielr1996/envsubst-action@1.0.0
+      env:
+        ECR_REGISTRY: $ECR_REGISTRY
+        IMAGE_TAG: $SHORT_SHA
+        ECR_REPOSITORY: $ECR_REPOSITORY
+      with:
+        input: git-deployment.yml
+        output: deploy.yml
+
     - name: Install and configure kubectl
       run: |
         VERSION=$(curl --silent https://storage.googleapis.com/kubernetes-release/release/stable.txt)
@@ -109,4 +122,4 @@ jobs:
         export ECR_REPOSITORY=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
         export IMAGE_TAG=${{ env.SHORT_SHA }}
         export KUBECONFIG=kubeconfig.yaml
-        kubectl apply -f app/git-deployment.yaml
+        kubectl apply -f deploy.yaml
