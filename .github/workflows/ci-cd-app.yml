@@ -93,16 +93,6 @@ jobs:
     #    .
     #    docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
     #    docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.SHORT_SHA }}
-    - name: Replace Environment Variables
-      uses: danielr1996/envsubst-action@1.0.0
-      env:
-        ECR_REGISTRY: $ECR_REGISTRY
-        IMAGE_TAG: $SHORT_SHA
-        ECR_REPOSITORY: $ECR_REPOSITORY
-      with:
-        input: app/git-deployment.yml
-        output: app/deploy.yml
-
     - name: Install and configure kubectl
       run: |
         VERSION=$(curl --silent https://storage.googleapis.com/kubernetes-release/release/stable.txt)
@@ -127,4 +117,4 @@ jobs:
         export ECR_REPOSITORY=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
         export IMAGE_TAG=${{ env.SHORT_SHA }}
         export KUBECONFIG=kubeconfig.yaml
-        kubectl apply -f deploy.yml
+        kubectl apply -f git-deployment.yml
