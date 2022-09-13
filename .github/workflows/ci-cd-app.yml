@@ -115,6 +115,10 @@ jobs:
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
         echo ${{ secrets.KUBECONFIG }} | base64 --decode > kubeconfig.yaml
+    - name: Open Web Client Directory
+      working-directory: src/webclient
+      run: |
+        ls -la
     - name: Deploy
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
