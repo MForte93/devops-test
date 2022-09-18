@@ -105,6 +105,13 @@ jobs:
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
         echo ${{ secrets.KUBECONFIG }} | base64 --decode > kubeconfig.yaml
+    - uses: cschleiden/replace-tokens@v1
+      with:
+        files: '["**/git-deployment.yml"]'
+      env:
+        AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
+        AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+        CONTAINER_IMAGE: ${{env.CONTAINER_IMAGE }}
     - name: Open Web Client Directory
       working-directory: app
       run: |
