@@ -18,10 +18,8 @@ spec:
     spec:
       containers:
         - name: devops-test-app
-          image: #{AWS_ACCOUNT_ID}#.dkr.ecr.#{$AWS_DEFAULT_REGION}#.amazonaws.com/#{CONTAINER_IMAGE}#
+          image: public.ecr.aws/l7h9i5e2/devops-test-app/#{CONTAINER_IMAGE}#
           ports:
             - containerPort: 5000
               protocol: TCP
           imagePullPolicy: Always
-      imagePullSecrets:
-        - name: regcred 
