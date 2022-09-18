@@ -51,7 +51,7 @@ jobs:
       #if: github.ref == 'refs/heads/main'
       run: |
         # Push image to AWS ECR
-        docker push public.ecr.aws/l7h9i5e2/devops-test-app/$CONTAINER_IMAGE    
+        docker push public.ecr.aws/l7h9i5e2/$CONTAINER_IMAGE    
   deploy:
     runs-on: ubuntu-latest
     defaults:
