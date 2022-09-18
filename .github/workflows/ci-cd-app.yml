@@ -42,7 +42,7 @@ jobs:
       run: |
         # Login to AWS ECR
         #$( aws ecr get-login --no-include-email )
-        aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin public.ecr.aws/l7h9i5e2/devops-test-app
+        aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
     - name: Build and tag the image
       run: |
