@@ -116,6 +116,7 @@ jobs:
       working-directory: app
       run: |
         ls -la
+        cat git-deployment.yml
     - name: Deploy
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
