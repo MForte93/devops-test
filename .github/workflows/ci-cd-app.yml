@@ -37,6 +37,12 @@ jobs:
     - name: Install Dependencies
       run: python3.7 -m pip install fastapi
 
+    # Add steps here like linting, testing, minification, etc.
+    - name: Setup ECR
+      run: |
+        # Login to AWS ECR
+        #$( aws ecr get-login --no-include-email )
+        aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin public.ecr.aws/l7h9i5e2/devops-test-app
 
     - name: Build and tag the image
       run: |
