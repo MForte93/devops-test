@@ -23,5 +23,5 @@ spec:
             - containerPort: 5000
               protocol: TCP
           imagePullPolicy: Always
-          imagePullSecrets:
-            - name: regcred 
+      imagePullSecrets:
+        - name: regcred 
