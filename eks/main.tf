@@ -34,3 +34,4 @@ module "eks_cluster" {
   desired_size = 2
   instance_types = ["t3.small"]
 } 
+

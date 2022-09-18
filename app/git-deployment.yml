@@ -20,6 +20,6 @@ spec:
         - name: devops-test-app
           image: 969765361855.dkr.ecr.us-east-2.amazonaws.com/devops-test-app:latest
           ports:
-            - containerPort: 80
+            - containerPort: 5000
               protocol: TCP
           imagePullPolicy: Always
