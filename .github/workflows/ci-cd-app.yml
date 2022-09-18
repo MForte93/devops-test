@@ -118,7 +118,4 @@ jobs:
         export IMAGE_TAG=${{ env.SHORT_SHA }}
         export KUBECONFIG=kubeconfig.yaml
         kubectl apply -f git-deployment.yml
-<<<<<<< HEAD
         kubectl apply -f service.yml
-=======
->>>>>>> 09f3f2e20f94a12902976e95830b59f2bcb6baa7
