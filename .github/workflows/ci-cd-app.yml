@@ -37,7 +37,6 @@ jobs:
     - name: Install Dependencies
       run: python3.7 -m pip install fastapi
 
-    # Add steps here like linting, testing, minification, etc.
 
     - name: Build and tag the image
       run: |
@@ -51,7 +50,7 @@ jobs:
       #if: github.ref == 'refs/heads/main'
       run: |
         # Push image to AWS ECR
-        docker push public.ecr.aws/l7h9i5e2/$CONTAINER_IMAGE    
+        docker push public.ecr.aws/l7h9i5e2/devops-test-app/$CONTAINER_IMAGE    
   deploy:
     runs-on: ubuntu-latest
     defaults:
