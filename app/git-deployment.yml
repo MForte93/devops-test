@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: devops-test-app
-          image: 969765361855.dkr.ecr.us-east-2.amazonaws.com/devops-test-app:latest
+          image: public.ecr.aws/l7h9i5e2/devops-test-app/#{CONTAINER_IMAGE}#
           ports:
             - containerPort: 5000
               protocol: TCP
